@@ -1,0 +1,25 @@
+{
+  "require": {
+    "vlucas/phpdotenv": "^5.5",
+    "illuminate/database": "^8.83",
+    "illuminate/pagination": "^8.83"
+  },
+  "autoload": {
+    "psr-4": {
+      "Components\\": "components/",
+      "Constants\\": "constants/",
+      "Controllers\\": "controllers/",
+      "Nested\\Controllers\\": "controllers/nested/",
+      "CustomExceptions\\": "exceptions/",
+      "Helpers\\": "helpers/",
+      "Models\\": "models/",
+      "Serializers\\": "serializers/",
+      "Mixins\\": "mixins/"
+    }
+  },
+  "scripts": {
+    "migrate": [
+      "@php database/migration.script.php"
+    ]
+  }
+}

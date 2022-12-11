@@ -4,11 +4,6 @@
  */
 require_once 'bootstrap.php';
 
-/*
- * define response to be always in JSON format (RESTful-API)
- */
-header('Content-Type: application/json; charset=utf-8');
-
 /**
  * disable annoying warnings if its implements in .env with true value
  */
@@ -28,39 +23,26 @@ require_once "routes/v1/urls.php";
 use Components\Route;
 use CustomExceptions\ClientException;
 
-$response = [];
+$_VIEW = [];
 
 try {
-    $response = Route::handleRequest();
+    $_VIEW[] = Route::handleRequest();
 
     if ($_ENV['GET_LOGGED_QUERIES'] == 'true') {
 
-        $response['sql_queries'] = Manager::getQueryLog();
+        $_VIEW[] = Manager::getQueryLog();
     }
-
-} catch (ClientException $e) {
-
-    $response = [
-        'data' => [
-            'validation_error' => $e->getMessage()
-        ],
-        'status_code' => $e->getCode()
-    ];
 
 } catch (Exception $e) {
-    // check if we in debug mode first, so we can clear what exactly the exception is.
     $debugModeIsActive = (($_ENV['DEBUG_MODE'] ?? "false") == "true");
 
-    $response = [
-        "error" => "Internal server error.",
-        "status_code" => \Constants\StatusCodes::INTERNAL_ERROR
-    ];
-
     if($debugModeIsActive) {
-        $response['error'] = $e->getMessage();
-    }
 
+        $_VIEW[] = $e->getMessage();
+    } else{
+
+        $_VIEW[] = "Internal server error.";
+    }
 } finally {
-    http_response_code($response['status_code']);
-    echo json_encode($response);
+    require_once 'views/layout/app.php';
 }

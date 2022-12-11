@@ -151,12 +151,13 @@ abstract class BaseController
             throw new Exception("$exception_message");
         }
 
-        $this->validateRequest($handler, $arguments);
+        // $this->validateRequest($handler, $arguments);
 
-        $response = $this->$handler(...$arguments);
+        ob_start();
+        $this->$handler(...$arguments);
+        $view = ob_get_contents();
+        ob_clean();
 
-        $this->validateResponse($response);
-
-        return $response;
+        return $view;
     }
 }
